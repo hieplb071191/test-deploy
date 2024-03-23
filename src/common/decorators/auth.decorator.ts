@@ -1,5 +1,6 @@
 import { SetMetadata, UseGuards, applyDecorators } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { AutJwthGuard } from '@src/modules/auth/guard/auth.guard';
 
 export function Auth({
     roles = [],
@@ -10,7 +11,7 @@ export function Auth({
             operationId
         }),
         SetMetadata('roles', roles),
-        UseGuards(),
+        UseGuards(AutJwthGuard),
         ApiBearerAuth(),
         ApiUnauthorizedResponse({ description: 'Unauthorized' }),
 
