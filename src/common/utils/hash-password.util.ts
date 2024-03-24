@@ -1,5 +1,4 @@
-import { createCipheriv, randomBytes, scrypt, createDecipheriv  } from 'crypto';
-import { promisify } from 'util';
+import { createCipheriv, randomBytes, createDecipheriv  } from 'crypto';
 
 export async function encryptPassword(password) {
     const iv = randomBytes(16);

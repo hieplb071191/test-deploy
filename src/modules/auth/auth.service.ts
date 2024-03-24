@@ -31,4 +31,13 @@ export class AuthService {
             access_token
         }
     }
+
+
+    async validateUser(payload) {
+        const user = await this.userRepository.findById(payload.id)
+        if (!user) {
+            return false
+        } 
+        return user
+    }
 }

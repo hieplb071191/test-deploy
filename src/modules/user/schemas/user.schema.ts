@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { BaseSchema } from '@src/common/mongoose/base.schema';
 import { randomUUID } from 'crypto';
 import { Document } from 'mongoose';
+import { UserRoleEnum } from '../constant/role.user.constant';
 
 export const userSchemaName = 'users'
 
@@ -104,11 +105,22 @@ export class User extends Document implements BaseSchema{
         required: false
     })
     address: AddressSchema
+
+    @Prop({
+        enum: UserRoleEnum,
+        default: UserRoleEnum.USER
+    })
+    role: UserRoleEnum
+
+    @Prop({
+        type: String,
+    })
+    _id: string;
 }
 
 export const userSchema =  SchemaFactory.createForClass(User)
 
 userSchema.pre('save', function (next, err)  {
     this._id = this.id
-    next()
+    next();
 })

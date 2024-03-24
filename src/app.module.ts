@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './modules/auth/auth.module';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
+import { ProductModule } from './modules/product/product.module';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { LoggerMiddleware } from './common/middlewares/logger.middleware';
         uri: config.get<string>('DB_URL')
       }))
     }),
-    AuthModule
+    AuthModule,
+    ProductModule
   ],
   controllers: [AppController],
   providers: [AppService, Logger],

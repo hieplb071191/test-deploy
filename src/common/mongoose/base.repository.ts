@@ -41,7 +41,12 @@ export class BaseRepository<T extends Document> {
         );
       }
       const doc = new this.objModel(docs);
-      return this.save(doc, options);
+      try {
+        return await this.save(doc, options);
+      }
+      catch(e) {
+        console.log(e)
+      }
   }
 
   async updateOne( filter?: FilterQuery<T>,
