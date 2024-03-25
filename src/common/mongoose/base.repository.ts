@@ -6,7 +6,7 @@ import {
 @Injectable()
 export class BaseRepository<T extends Document> {
     public readonly collectionName: string;
-  private readonly filterNotDeletedYet = { isDeleted: { $ne: true } };
+  private readonly filterNotDeletedYet = { deletedAt: null };
 
   constructor(private readonly objModel: Model<T>) {
     this.collectionName = objModel.collection.collectionName;
@@ -73,7 +73,19 @@ export class BaseRepository<T extends Document> {
     projection?: ProjectionType<T>,
     options?: QueryOptions<T>,
   ): Promise<T> {
-    return this.findOne(this.setFilter({ id }), projection, options);
+    return this.findOne(this.setFilter({ id }), projection, {...options, lean: true});
+  }
+
+  async findAll(
+    filter:FilterQuery<T>,
+    projection?: ProjectionType<T>,
+    options?: QueryOptions<T>,
+  ): Promise<T[]> {
+    return await this.objModel.find(this.setFilter(filter), projection, options)
+  }
+
+  async countAll(filter:FilterQuery<T>) {
+    return await this.objModel.countDocuments(this.setFilter(filter))
   }
 
   async rawData(filter: PipelineStage[], isNotQueryDelete = true): Promise<T[]> {

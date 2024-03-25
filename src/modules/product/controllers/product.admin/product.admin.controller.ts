@@ -1,9 +1,11 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ProductService } from '../../product.service';
 import { ApiTags } from '@nestjs/swagger';
 import { Auth } from '@src/common/decorators/auth.decorator';
 import { ProductCreateDto } from '../../dtos/product-create.dto';
 import { User } from '@src/common/decorators/user.decorator';
+import { ProductListDto } from '../../dtos/product-list.dto';
+import { ProductUpdateDto } from '../../dtos/product-update.dto';
 
 @ApiTags('product-admin')
 @Controller('product-admin')
@@ -28,7 +30,16 @@ export class ProductAdminController {
         roles: ['admin', 'user']
     })
     @Get('/product')    
-    getProductByQuery(@Query() query) {
-        return this.service.getProductByQuery({})
+    getProductByQuery(@Query() query: ProductListDto) {
+        return this.service.getProductByQuery(query)
+    }
+
+    @Auth({
+        operationId: 'Admin update product',
+        roles: ['admin']
+    })
+    @Put('product/:id')
+    updateProduct(@Body() dto: ProductUpdateDto, @Param('id') id: string, @User() user: any) {
+        return this.service.updateProduct(dto, id, user)
     }
 }
