@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { BaseSchema } from "@src/common/mongoose/base.schema";
 import mongoose,{ Document } from "mongoose";
 import { randomUUID } from 'crypto';
-import { Product } from "./product.schema";
+import {v4 as uuidV4} from 'uuid'
 
 @Schema()
 export class DisCountSchema {
@@ -20,6 +20,11 @@ export class DisCountSchema {
 
 @Schema()
 export class ProductDetail extends Document implements BaseSchema {
+    @Prop({
+        type: uuidV4,
+        default: randomUUID()
+    })
+    _id: string
 
     @Prop({
         type: Date,
@@ -50,10 +55,10 @@ export class ProductDetail extends Document implements BaseSchema {
     deleteAt: Date;
 
     @Prop({
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'Product'
     })
-    product: mongoose.Schema.Types.ObjectId
+    product: string
 
     @Prop({
         type: String,
@@ -81,11 +86,6 @@ export class ProductDetail extends Document implements BaseSchema {
     })
     discount: DisCountSchema
     
-    @Prop({
-        type: String,
-        default: randomUUID()
-    })
-    id: string
 
     @Prop({
         type: Number,

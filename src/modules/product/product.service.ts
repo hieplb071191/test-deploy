@@ -1,11 +1,12 @@
 import { BadGatewayException, BadRequestException, Injectable } from '@nestjs/common';
 import { ProductRepository } from './repositories/product.repository';
 import { ProductDetailRepository } from './repositories/product-detail.repository';
-import { ProductCreateDto } from './dtos/product-create.dto';
+import { ProductCreateDto, ProductDetailCreateDto } from './dtos/product-create.dto';
 import { ProductError } from './constant/product-erorr.enum';
 import { ProductListDto } from './dtos/product-list.dto';
 import getSort from '@src/common/utils/get-sort-by.util';
 import { ProductUpdateDto } from './dtos/product-update.dto';
+import {v4} from 'uuid'
 
 @Injectable()
 export class ProductService {
@@ -84,7 +85,7 @@ export class ProductService {
                 )
             }
         } else {
-            const result = await this.productRepository.findAll(_query, projection)
+            const result = await this.productRepository.findPopulate(_query, projection)
             return result
         }
         
@@ -147,7 +148,7 @@ export class ProductService {
                     const productDetail = await this.productDetailRepository.create(createModel)
                     listProductPopulate.push(productDetail._id)
                 }
-                await this.productRepository.updateOne({id: product.id}, {productDetail: listProductPopulate})
+                await this.productRepository.updateOne({_id: product._id}, {productDetail: listProductPopulate})
             }
             return {success: true}
         } catch(e) {
@@ -171,5 +172,35 @@ export class ProductService {
         model.updatedBy = user.id
         model.updatedAt = new Date()
         return await this.productRepository.updateOne({id}, model)
+    }
+
+    async createProductDetail(dtos: ProductDetailCreateDto[], productId: string, user) {
+        for (let dto of dtos) {
+            const oldDetail = await this.productDetailRepository.findOne({
+                product: productId,
+                size: dto.size,
+                color: dto.color,
+            })
+            if (!oldDetail) {
+                const createModel = {
+                    ...dto, 
+                    product: productId,
+                    createdBy: user.id,
+                    updatedBy: user.id
+                }
+                await this.productDetailRepository.create(createModel)
+            } else {
+                const updateModel = {
+                    $set: {
+                        price: dto.price
+                    },
+                    $inc: {
+                        quantity: dto.quantity,
+                    }
+                }
+                await this.productDetailRepository.updateOne({id: oldDetail.id}, updateModel)
+            }
+        }
+        return true
     }
 }

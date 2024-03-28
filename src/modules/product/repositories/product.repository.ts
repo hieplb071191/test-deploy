@@ -14,8 +14,8 @@ export class ProductRepository extends BaseRepository<Product> {
         super(productModel)
     }
 
-    async findPopulate() {
-        return await this.productModel.findOne().populate({path: 'productDetail', select: {
+    async findPopulate(query, projection?) {
+        return await this.productModel.find(query).populate({path: 'productDetail', select: {
             size: 1,
             color: 1,
             imageUrls: 1,

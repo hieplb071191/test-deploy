@@ -3,8 +3,15 @@ import { BaseSchema } from "@src/common/mongoose/base.schema";
 import { randomUUID } from 'crypto';
 import mongoose, {Document} from 'mongoose'
 import { ProductDetail } from "./product-detail.schema";
+import {v4 as uuidV4} from 'uuid'
 @Schema()
 export class Product extends Document implements BaseSchema  {
+
+    @Prop({
+        type: uuidV4,
+        default: randomUUID()
+    })
+    _id: string
     
     @Prop({
         type: Date,
@@ -69,16 +76,10 @@ export class Product extends Document implements BaseSchema  {
     productCode: string;
 
     @Prop({
-        type: String,
-        default: randomUUID()
+        type: [Object],
+        ref: 'ProductDetail'
     })
-    id: string
-
-    @Prop({
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'ProductDetail',
-    })
-    productDetail: mongoose.Schema.Types.ObjectId[]
+    productDetail: string
 }
 
 export const productSchema = SchemaFactory.createForClass(Product)

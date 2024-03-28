@@ -43,7 +43,6 @@ export class ProductDetailCreateDto {
         example: 1
     })
     quantity: number
-
 }
 
 export class ProductCreateDto {

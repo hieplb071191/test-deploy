@@ -73,7 +73,7 @@ export class BaseRepository<T extends Document> {
     projection?: ProjectionType<T>,
     options?: QueryOptions<T>,
   ): Promise<T> {
-    return this.findOne(this.setFilter({ id }), projection, {...options, lean: true});
+    return this.findOne(this.setFilter({ $or: [{id: id}, {_id: id}] }), projection, {...options, lean: true});
   }
 
   async findAll(
