@@ -7,6 +7,8 @@ import { User } from '@src/common/decorators/user.decorator';
 import { ProductListDto } from '../../dtos/product-list.dto';
 import { ProductUpdateDto } from '../../dtos/product-update.dto';
 import { DetailProductCreateDto } from '../../dtos/product-detail.dto';
+import { ListProductDetailDto } from '../../dtos/productdetail-list.dto';
+import { ProductDetailUpdateDto } from '../../dtos/product-detail-update.dto';
 
 @ApiTags('product-admin')
 @Controller('product-admin')
@@ -36,6 +38,15 @@ export class ProductAdminController {
     }
 
     @Auth({
+        operationId: 'admin-get-one-product',
+        roles: ['admin']
+    })
+    @Get('/product/:productId')
+    getProductById(@Param('productId') productId: string) {
+        return this.service.getOneProduct(productId)
+    }
+
+    @Auth({
         operationId: 'Admin update product',
         roles: ['admin']
     })
@@ -49,7 +60,25 @@ export class ProductAdminController {
         roles: ['admin']
     })
     @Post('product-detail/:productId')
-    createProductDetail(@Param('productId') productId, @User() user, @Body() dtos: DetailProductCreateDto) {
+    createProductDetail(@Param('productId') productId: string, @User() user, @Body() dtos: DetailProductCreateDto) {
         return this.service.createProductDetail(dtos.details, productId, user)
+    }
+
+    @Auth({
+        operationId: 'Admin-get-list-product-detail',
+        roles: ['admin']
+    })
+    @Get('/list-product-detail/:productId')
+    getListProductDetail(@Query() query: ListProductDetailDto, @Param('productId') productId: string) {
+        return this.service.getProductDetailByQuery(query, productId)
+    }
+
+    @Auth({
+        operationId: 'admin-update-product-detail',
+        roles: ['admin']
+    })
+    @Put('/update-product-detail')
+    updateProductDetail(@Body() dto: ProductDetailUpdateDto, @User() user) {
+        return this.service.updateProductDetail(dto, user)
     }
 }

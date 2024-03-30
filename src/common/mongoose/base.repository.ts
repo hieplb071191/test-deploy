@@ -65,7 +65,7 @@ export class BaseRepository<T extends Document> {
       this.setFilter(filter),
       projection,
       options || { lean: true },
-    );
+    ).exec();
   }
 
   async findById(

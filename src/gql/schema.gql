@@ -1,0 +1,74 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AddressSchema {
+  lat: Float!
+  long: Float!
+  specialAddress: String!
+}
+
+type PasswordSchema {
+  encryptedPassword: String!
+  iv: String!
+  key: String!
+}
+
+type User {
+  deleteAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  id: String!
+  email: String!
+  firstName: String!
+  lastName: String!
+  password: PasswordSchema!
+  isActive: Boolean!
+  address: AddressSchema!
+  role: String!
+  _id: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Product {
+  _id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  updatedBy: String!
+  createdBy: String!
+  deleteAt: DateTime!
+  name: String!
+  branch: String!
+  description: String!
+  imageUrls: [String!]!
+  categoryId: String!
+  productCode: String!
+}
+
+type PaginationProduct {
+  rows: [Product!]!
+  total: Float!
+  page: Float!
+  perPage: Float!
+  totalPage: Float!
+}
+
+type Query {
+  getHello: String!
+  user(email: String!): User!
+  products(paramQuery: ProductListDto): PaginationProduct!
+}
+
+input ProductListDto {
+  search: String
+  page: Float
+  perPage: Float
+  productCode: String
+  categoryId: String
+  fields: String
+  sort: String
+}

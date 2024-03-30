@@ -1,8 +1,12 @@
+import { ArgsType, Field, InputType } from "@nestjs/graphql";
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
 import { IsNumber, IsOptional, IsString } from "class-validator";
 
+@InputType()
 export class ProductListDto {
+
+    @Field(() => String, {nullable: true})
     @IsString()
     @IsOptional()
     @ApiPropertyOptional({
@@ -11,6 +15,7 @@ export class ProductListDto {
     })
     search: string;
 
+    @Field(() => Number, {nullable: true})
     @Transform((obj) => Number(obj.value))
     @IsNumber()
     @IsOptional()
@@ -20,6 +25,7 @@ export class ProductListDto {
     })
     page: number;
 
+    @Field(() => Number, {nullable: true})
     @Transform((obj) => Number(obj.value))
     @IsNumber()
     @IsOptional()
@@ -29,6 +35,7 @@ export class ProductListDto {
     })
     perPage: number;
 
+    @Field(() => String, {nullable: true})
     @IsString()
     @IsOptional()
     @ApiPropertyOptional({
@@ -37,6 +44,7 @@ export class ProductListDto {
     })
     productCode: string;
 
+    @Field(() => String, {nullable: true})
     @IsString()
     @IsOptional()
     @ApiPropertyOptional({
@@ -45,6 +53,7 @@ export class ProductListDto {
     })
     categoryId: string
 
+    @Field(() => String, {nullable: true})
     @IsString()
     @IsOptional()
     @ApiPropertyOptional({
@@ -53,6 +62,7 @@ export class ProductListDto {
     })
     fields: string
 
+    @Field(() => String, {nullable: true})
     @IsString()
     @IsOptional()
     @ApiPropertyOptional({

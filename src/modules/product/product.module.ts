@@ -6,6 +6,8 @@ import { Product, productSchema } from './schemas/product.schema';
 import { ProductDetail, ProductDetailSchema } from './schemas/product-detail.schema';
 import { ProductRepository } from './repositories/product.repository';
 import { ProductDetailRepository } from './repositories/product-detail.repository';
+import { ProductResolver } from './resolvers/product.resolver';
+import { ProductUserController } from './controllers/product.user/product.user.controller';
 
 @Module({
   imports: [
@@ -20,8 +22,8 @@ import { ProductDetailRepository } from './repositories/product-detail.repositor
       },
     ])
   ],
-  providers: [ProductService,ProductRepository,ProductDetailRepository],
-  controllers: [ProductAdminController]
+  providers: [ProductService,ProductRepository,ProductDetailRepository, ProductResolver],
+  controllers: [ProductAdminController, ProductUserController]
 })
 export class ProductModule {
 

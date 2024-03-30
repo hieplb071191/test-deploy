@@ -7,6 +7,10 @@ import { ProductListDto } from './dtos/product-list.dto';
 import getSort from '@src/common/utils/get-sort-by.util';
 import { ProductUpdateDto } from './dtos/product-update.dto';
 import {v4} from 'uuid'
+import { ListProductDetailDto } from './dtos/productdetail-list.dto';
+import { PipelineStage } from 'mongoose';
+import { ProductDetailUpdateDto, ProductDetailUpdateQuantityDto } from './dtos/product-detail-update.dto';
+import { QuantityUpdateType } from './constant/product-detail.enum';
 
 @Injectable()
 export class ProductService {
@@ -81,14 +85,18 @@ export class ProductService {
                 page: query.page,
                 perPage: query.perPage,
                 totalPage: Math.floor(
-                    (total[1] + query.perPage - 1) / query.perPage
+                    (total + query.perPage - 1) / query.perPage
                 )
             }
         } else {
-            const result = await this.productRepository.findPopulate(_query, projection)
+            const result = await this.productRepository.findAll(_query)
             return result
         }
         
+    }
+
+    async getOneProduct(_id: string) {
+        return await this.productRepository.findOne({_id: _id})
     }
 
     async createProduct(dto: ProductCreateDto, user) {
@@ -202,5 +210,118 @@ export class ProductService {
             }
         }
         return true
+    }
+
+    async getProductDetailByQuery(query: ListProductDetailDto, productId: string) {
+        let { size, color, perPage, page } = query
+        perPage = perPage ? Number(perPage) : null
+        page = page ? Number(page) : null
+        const match = {
+            product: productId
+        }
+
+        if (size) {
+            match[size] = size
+        }
+        if (color) {
+            match[color] = color
+        }
+
+        const aggregate: PipelineStage[] = [
+            {
+                $match: match
+            },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: 'product',
+                    foreignField: '_id',
+                    as: 'product',
+                    pipeline: [
+                        {
+                            $project: {
+                                name: 1,
+                                productCode: 1,
+                                branch: 1,
+                                imageUrls: 1,
+                            }
+                        }
+                    ]
+                }
+            },
+        ]
+
+        if (page && perPage) {
+            aggregate.push({
+                $skip: (page - 1) * perPage
+            }, {
+                $limit: perPage
+            }
+            )
+            const [productDetails, total] = await Promise.all(
+                [
+                    this.productDetailRepository.rawData(aggregate),
+                    this.productDetailRepository.countAll(match)
+                ]
+            )
+            return {
+                rows: productDetails,
+                total,
+                page,
+                perPage,
+                totalPage: Math.floor(
+                    (total + query.perPage - 1) / query.perPage
+                )
+            }
+        } else {
+            const productDetails = await this.productDetailRepository.rawData(aggregate)
+            return {
+                rows: productDetails
+            }
+        }
+    }
+
+    async updateProductDetail (dto: ProductDetailUpdateDto, user) {
+        const model = await this.productDetailRepository.findOne({_id: dto._id})
+        if (!model) {
+            throw new BadGatewayException(ProductError.PRODUCT_NOT_FOUND)
+        }
+
+        const updateModel = {
+            ...model,
+            ...dto
+        }
+        return await this.productDetailRepository.updateOne({_id: dto._id},updateModel)
+
+    }
+
+    async updateQuantityProductDetail(
+        dto: ProductDetailUpdateQuantityDto
+    ) {
+        const {
+            typeQuantityUpdate,
+            _id,
+            quantity
+        } = dto
+
+        const model = await this.productDetailRepository.findOne({_id})
+        if (!model) {
+            throw new BadGatewayException(ProductError.PRODUCT_NOT_FOUND)
+        }
+        if (typeQuantityUpdate === QuantityUpdateType.ADD_QUANTITY) {
+            const updateModel = {
+                $inc: {
+                    quantity: quantity
+                }
+            }
+            return await this.productDetailRepository.updateOne({_id}, updateModel)
+        } else {
+            const updateModel = {
+                $inc: {
+                    quantity: -quantity
+                }
+            }
+            return await this.productDetailRepository.updateOne({_id}, updateModel)
+        }
     }
 }
