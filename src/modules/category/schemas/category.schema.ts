@@ -30,7 +30,7 @@ export class Category extends Document implements BaseSchema  {
 
     @Prop({
         type: UUIDv4,
-        default: randomUUID()
+        default: UUIDv4
     })
     _id: string
 

@@ -13,7 +13,7 @@ export class Product extends Document implements BaseSchema  {
     @Field(() => String)
     @Prop({
         type: uuidV4,
-        default: randomUUID()
+        default: uuidV4
     })
     _id: string
     

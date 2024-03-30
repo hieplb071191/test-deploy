@@ -4,6 +4,7 @@ import { randomUUID } from 'crypto';
 import { Document } from 'mongoose';
 import { UserRoleEnum } from '../constant/role.user.constant';
 import { Field, ObjectType } from '@nestjs/graphql';
+import { v4 as uuidV4} from 'uuid'
 
 export const userSchemaName = 'users'
 
@@ -76,8 +77,8 @@ export class User extends Document implements BaseSchema{
 
     @Field(() => String)
     @Prop({
-        type: String,
-        default: randomUUID()
+        type: uuidV4,
+        default: uuidV4,
     })
     id: string;
 

@@ -22,7 +22,7 @@ export class DisCountSchema {
 export class ProductDetail extends Document implements BaseSchema {
     @Prop({
         type: uuidV4,
-        default: randomUUID()
+        default: uuidV4
     })
     _id: string
 
