@@ -15,6 +15,8 @@ import { AppResolver } from './app.resolver';
 import { ApolloServerPluginLandingPageLocalDefault as pluginServer} from 'apollo-server-core';
 import { CategoryModule } from './modules/category/category.module';
 import { TerminusModule } from '@nestjs/terminus';
+import { OrderModule } from './modules/order/order.module';
+import { CartModule } from './modules/cart/cart.module';
 
 
 
@@ -41,6 +43,8 @@ import { TerminusModule } from '@nestjs/terminus';
     ProductModule,
     CategoryModule,
     TerminusModule,
+    OrderModule,
+    CartModule,
   ],
   controllers: [AppController],
   providers: [AppService, Logger, LoggingPlugin, AppResolver],

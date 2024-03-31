@@ -9,6 +9,7 @@ import { ProductUpdateDto } from '../../dtos/product-update.dto';
 import { DetailProductCreateDto } from '../../dtos/product-detail.dto';
 import { ListProductDetailDto } from '../../dtos/productdetail-list.dto';
 import { ProductDetailUpdateDto } from '../../dtos/product-detail-update.dto';
+import { UserAgent } from '@src/common/decorators/useragent.decorator';
 
 @ApiTags('product-admin')
 @Controller('product-admin')
@@ -33,7 +34,8 @@ export class ProductAdminController {
         roles: ['admin', 'user']
     })
     @Get('/product')    
-    getProductByQuery(@Query() query: ProductListDto) {
+    getProductByQuery(@Query() query: ProductListDto, @UserAgent() useragent: any) {
+        console.log(useragent)
         return this.service.getProductByQuery(query)
     }
 

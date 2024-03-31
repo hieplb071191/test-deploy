@@ -1,7 +1,9 @@
 import { ArgsType, Field, InputType } from "@nestjs/graphql";
-import { ApiPropertyOptional } from "@nestjs/swagger";
-import { Transform } from "class-transformer";
-import { IsNumber, IsOptional, IsString } from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsBiggerThan } from "@src/common/custom-validation/is-bigger-than.decorator";
+import { Transform, Type } from "class-transformer";
+import { IsNotEmpty, IsNumber, IsOptional, IsString, Min, ValidateIf } from "class-validator";
+
 
 @InputType()
 export class ProductListDto {
@@ -70,4 +72,28 @@ export class ProductListDto {
         example: '-name,-branch'
     })
     sort: string
+
+    @Transform((value) => Number(value.value))
+    @IsNumber()
+    @IsOptional()
+    @ApiPropertyOptional({
+        type: Number,
+        example: 1000
+    })
+    low: number
+
+
+    @Transform((value) => Number(value.value))
+    @IsNumber()
+    @IsOptional()
+    @ValidateIf(obj => obj.low && obj.high)
+    @IsBiggerThan('low', {
+        message: 'high is not less than low'
+    })
+    @ApiPropertyOptional({
+        type: Number,
+        example: 10000
+    })
+    high: number
+    
 }

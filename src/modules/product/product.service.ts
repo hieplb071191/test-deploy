@@ -28,7 +28,7 @@ export class ProductService {
             }
         }
         if (query.search) {
-            query['$or'] = [
+            _query['$or'] = [
                 {
                     name: {
                         $regex: query.search,
@@ -70,27 +70,78 @@ export class ProductService {
             const sort = getSort(query.sort)
             options['sort'] = sort
         }
+
+        const aggregate: PipelineStage[] = [
+            {
+                $match: _query
+            },
+            {
+                $lookup: {
+                    from: 'productdetails',
+                    foreignField: 'product',
+                    localField: '_id',
+                    as: 'productDetail'
+                }
+            }
+        ]
+
+        if (query.low || query.high) {
+            const { low, high } = query
+            const and = []
+            low && and.push({
+                'productDetail.price': {
+                    $gte: low
+                }
+            });
+
+            high && and.push({
+                'productDetail.price': {
+                    $lte: high
+                }
+            })
+            aggregate.push({
+                $match: {
+                    $and: and
+                }
+            })
+        }
+        
+        aggregate.push({
+            $project: projection
+        })
         if (query.page && query.perPage) {
  
             options['skip'] = (query.page - 1) *  query.perPage,
             options['limit'] = query.perPage
   
-            const [result, total] = await Promise.all([
-                this.productRepository.findAll(_query, projection, options),
-                this.productRepository.countAll(_query)
-            ])
+            const [result, [total]] = await Promise.all([
+                this.productRepository.rawData(aggregate),
+                this.productRepository.rawData([
+                    ...aggregate,
+                    {
+                        $group: {
+                            _id: '_id',
+                            total: {
+                                $sum: 1
+                            }
+                        }
+                    }    
+                ])
+            ]) as any[]
             return {
                 rows: result,
-                total: total,
+                total: total?.total,
                 page: query.page,
                 perPage: query.perPage,
-                totalPage: Math.floor(
-                    (total + query.perPage - 1) / query.perPage
-                )
+                totalPage: total?.total  ? Math.floor(
+                    (total.total + query.perPage - 1) / query.perPage
+                ) : 0
             }
         } else {
-            const result = await this.productRepository.findAll(_query)
-            return result
+            const result = await this.productRepository.rawData(aggregate)
+            return {
+                rows: result
+            }
         }
         
     }
@@ -323,5 +374,13 @@ export class ProductService {
             }
             return await this.productDetailRepository.updateOne({_id}, updateModel)
         }
+    }
+
+    async getOneProductDetailByInfo(query, productId) {
+        return await this.productDetailRepository.findOne({
+            product: productId,
+            size: query.size,
+            color: query.color
+        })
     }
 }
