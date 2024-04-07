@@ -7,7 +7,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app: INestApplication = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: ['*']
+    origin: ['*', 'http://localhost:3000', 'https://lehiep-dev.xyz']
   });
   app.use(helmet());
   app.setGlobalPrefix('/api')
