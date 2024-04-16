@@ -5,6 +5,7 @@ import { Document } from 'mongoose';
 import { UserRoleEnum } from '../constant/role.user.constant';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { v4 as uuidV4} from 'uuid'
+import { UserGenderEnum } from '../constant/user.constant';
 
 export const userSchemaName = 'users'
 
@@ -136,6 +137,11 @@ export class User extends Document implements BaseSchema{
         type: String,
     })
     _id: string;
+
+    @Prop({
+        enum: UserGenderEnum
+    })
+    gender: UserGenderEnum;
 }
 
 export const userSchema =  SchemaFactory.createForClass(User)

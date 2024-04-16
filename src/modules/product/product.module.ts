@@ -8,6 +8,7 @@ import { ProductRepository } from './repositories/product.repository';
 import { ProductDetailRepository } from './repositories/product-detail.repository';
 import { ProductResolver } from './resolvers/product.resolver';
 import { ProductUserController } from './controllers/product.user/product.user.controller';
+import { ProductPublicController } from './controllers/product.public/product.public.controller';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { ProductUserController } from './controllers/product.user/product.user.c
     ])
   ],
   providers: [ProductService,ProductRepository,ProductDetailRepository, ProductResolver],
-  controllers: [ProductAdminController, ProductUserController]
+  controllers: [ProductAdminController, ProductUserController, ProductPublicController]
 })
 export class ProductModule {
 

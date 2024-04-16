@@ -17,7 +17,7 @@ import { AuthJwtStrategy } from './strategies/auth.strategy';
           global: true,
           secret: config.get<string>('SECRECT_JWT'),
           signOptions: { 
-            expiresIn: config.get<string>('EXPIRED_TOKEN') || '10h'
+            expiresIn: config.get<string>('EXPIRED_TOKEN') || '30s'
           },
         }
       },

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
 import { UserRepository } from '../user/repositories/user.repository';
 import { UserError } from '../user/constant/error.user.constant';
 import { decryptPassword } from '@src/common/utils/hash-password.util';
@@ -11,6 +11,7 @@ export class AuthService {
         private readonly userRepository: UserRepository,
         private readonly jwtService: JwtService
     ){}
+
 
     async loginByPassword(email, password) {
         const user = await this.userRepository.findOne({

@@ -59,6 +59,7 @@ export class ProductService {
             id: 1,
             createdAt: 1,
             updatedAt: 1,
+            productDetails: 1,
         }
         if (query.fields) {
             const listFields = query.fields.split(',')
@@ -80,7 +81,7 @@ export class ProductService {
                     from: 'productdetails',
                     foreignField: 'product',
                     localField: '_id',
-                    as: 'productDetail'
+                    as: 'productDetails'
                 }
             }
         ]
@@ -89,13 +90,13 @@ export class ProductService {
             const { low, high } = query
             const and = []
             low && and.push({
-                'productDetail.price': {
+                'productDetails.price': {
                     $gte: low
                 }
             });
 
             high && and.push({
-                'productDetail.price': {
+                'productDetails.price': {
                     $lte: high
                 }
             })
