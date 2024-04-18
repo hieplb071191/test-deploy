@@ -5,6 +5,8 @@ import mongoose, {Document} from 'mongoose'
 import { ProductDetail } from "./product-detail.schema";
 import {v4 as uuidV4} from 'uuid'
 import { Field, ObjectType } from "@nestjs/graphql";
+import { ProductTypeEnum } from "../constant/product.enum";
+import { UserGenderEnum } from "@src/modules/user/constant/user.constant";
 
 @ObjectType()
 @Schema()
@@ -95,6 +97,18 @@ export class Product extends Document implements BaseSchema  {
         ref: 'ProductDetail'
     })
     productDetail: string
+
+    @Prop({
+        enum: ProductTypeEnum,
+        required: true
+    })
+    type: ProductTypeEnum
+
+    @Prop({
+        enum: UserGenderEnum,
+        required: true
+    })
+    gender: UserGenderEnum
 }
 
 export const productSchema = SchemaFactory.createForClass(Product)

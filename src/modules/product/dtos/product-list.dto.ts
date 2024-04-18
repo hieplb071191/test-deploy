@@ -2,7 +2,8 @@ import { ArgsType, Field, InputType } from "@nestjs/graphql";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsBiggerThan } from "@src/common/custom-validation/is-bigger-than.decorator";
 import { Transform, Type } from "class-transformer";
-import { IsNotEmpty, IsNumber, IsOptional, IsString, Min, ValidateIf } from "class-validator";
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, Min, ValidateIf } from "class-validator";
+import { ProductTypeEnum } from "../constant/product.enum";
 
 
 @InputType()
@@ -95,5 +96,33 @@ export class ProductListDto {
         example: 10000
     })
     high: number
+
+    @IsEnum(ProductTypeEnum)
+    @IsOptional()
+    @ApiPropertyOptional({
+        enum: ProductTypeEnum
+    })
+    type: ProductTypeEnum
+
+    @IsString()
+    @IsOptional()
+    @ApiPropertyOptional({
+        type: String
+    })
+    branch: string
+
+    @IsString()
+    @IsOptional()
+    @ApiPropertyOptional({
+        type: String
+    })
+    size: string
+
+    @IsString()
+    @IsOptional()
+    @ApiPropertyOptional({
+        type: String
+    })
+    color: string
     
 }

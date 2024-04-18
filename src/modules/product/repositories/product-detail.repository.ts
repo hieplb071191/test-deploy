@@ -18,4 +18,8 @@ export class ProductDetailRepository extends BaseRepository<ProductDetail> {
         const result = await produtDetail.populate({path: 'product', select: ['name', 'branch']})
         return result
     }
+
+    async findDistinct(field: string) {
+        return this.productDetailModel.distinct(field)
+    }
 }

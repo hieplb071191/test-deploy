@@ -35,12 +35,6 @@ export class ProductService {
                         $options: "i"
                     }
                 },
-                {
-                    branch: {
-                        $regex: query.search,
-                        $options: "i"
-                    }
-                }
             ]
         }
         if (query.categoryId) {
@@ -49,6 +43,17 @@ export class ProductService {
 
         if (query.productCode) {
             _query['productCode'] = query.productCode
+        }
+
+        if (query.type) {
+            _query['type'] = query.type
+        }
+
+        if (query.branch) {
+            const listBranch = query.branch.split(',')
+            _query['branch'] = {
+                $in: listBranch
+            }
         }
 
         const projection = {
@@ -86,8 +91,8 @@ export class ProductService {
             }
         ]
 
-        if (query.low || query.high) {
-            const { low, high } = query
+        if (query.low || query.high || query.size || query.color) {
+            const { low, high, size, color } = query
             const and = []
             low && and.push({
                 'productDetails.price': {
@@ -100,6 +105,15 @@ export class ProductService {
                     $lte: high
                 }
             })
+
+            size && and.push({
+                'productDetails.size': size
+            })
+
+            color && and.push({
+                'productDetails.color': color
+            })
+
             aggregate.push({
                 $match: {
                     $and: and
@@ -159,7 +173,9 @@ export class ProductService {
                 productCode,
                 productDetail,
                 imageUrls,
-                branch
+                branch,
+                type,
+                gender,
             } = dto
     
             const oldProduct = await this.productRepository.findOne({
@@ -189,6 +205,8 @@ export class ProductService {
                 categoryId,
                 branch,
                 imageUrls,
+                type,
+                gender,
                 createdBy: user.id,
                 updatedBy: user.id
             }
@@ -383,5 +401,20 @@ export class ProductService {
             size: query.size,
             color: query.color
         })
+    }
+
+    async getQueryDataProduct() {
+        const result = await Promise.all([
+            this.productDetailRepository.findDistinct('color'),
+            this.productDetailRepository.findDistinct('size'),
+            this.productRepository.findDistinct('branch'),
+            this.productRepository.findDistinct('gender')
+        ])
+        return {
+            listColor: result[0],
+            listSize: result[1],
+            listBranch: result[2],
+            listGender: result[3],
+        }
     }
 }

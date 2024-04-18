@@ -17,4 +17,10 @@ export class ProductPublicController {
         return this.service.getProductByQuery(query)
     }
 
+    @Public('get-query-data')
+    @Get('/get-query-data')
+    getQueryData() {
+        return this.service.getQueryDataProduct()
+    }
+
 }

@@ -105,4 +105,8 @@ export class BaseRepository<T extends Document> {
 
     return this.objModel.aggregate(filter)
   }
+
+  async findDistinct(field: string) {
+    return this.objModel.distinct(field)
+}
 }
