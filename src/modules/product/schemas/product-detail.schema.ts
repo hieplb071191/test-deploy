@@ -4,18 +4,18 @@ import mongoose,{ Document } from "mongoose";
 import { randomUUID } from 'crypto';
 import {v4 as uuidV4} from 'uuid'
 
-@Schema()
+@Schema({_id: false})
 export class DisCountSchema {
     @Prop({
         type: String,
 
     })
-    type: string;
+    discountType: string;
 
     @Prop({
         type: Number
     })
-    value: number
+    discountValue: number
 }
 
 @Schema()
@@ -95,3 +95,8 @@ export class ProductDetail extends Document implements BaseSchema {
 }
 
 export const ProductDetailSchema = SchemaFactory.createForClass(ProductDetail)
+ProductDetailSchema.pre('save', function(next) {
+    console.log(this.discount), 
+    next()
+})
+

@@ -96,7 +96,7 @@ export class Product extends Document implements BaseSchema  {
         type: [Object],
         ref: 'ProductDetail'
     })
-    productDetail: string
+    productDetail: string[]
 
     @Prop({
         enum: ProductTypeEnum,

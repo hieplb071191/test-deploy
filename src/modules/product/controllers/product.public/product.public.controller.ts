@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from "@nestjs/common";
+import { Controller, Get, Param, Query } from "@nestjs/common";
 import { ProductService } from "../../product.service";
 import { Public } from "@src/common/decorators/public.decorator";
 import { ProductListDto } from "../../dtos/product-list.dto";
@@ -15,6 +15,12 @@ export class ProductPublicController {
     @Get('/product')
     getProducByQuery( @Query() query: ProductListDto) {
         return this.service.getProductByQuery(query)
+    }
+    
+    @Public('get-one-product')
+    @Get('/get-one-product/:id')
+    getDetailProduct(@Param('id') id: string ) {
+        return this.service.getOneProduct(id)
     }
 
     @Public('get-query-data')

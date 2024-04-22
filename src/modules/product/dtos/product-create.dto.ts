@@ -1,8 +1,30 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { UserGenderEnum } from "@src/modules/user/constant/user.constant";
-import { Type } from "class-transformer";
-import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsString, Min, ValidateNested } from "class-validator";
+import { Transform, Type } from "class-transformer";
+import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, Min, ValidateNested } from "class-validator";
 import { ProductTypeEnum } from "../constant/product.enum";
+
+export class DiscountDto {
+    @IsString()
+    @IsNotEmpty()
+    @ApiProperty({
+        type: String,
+        example: 'percent'
+    })
+    discountType: string
+
+    @Transform((obj) => {
+        console.log(obj)
+        return Number(obj.value)
+    })
+    @IsNumber()
+    @IsNotEmpty()
+    @ApiProperty({
+        type: Number,
+        example: 15
+    })
+    discountValue: number
+}
 
 export class ProductDetailCreateDto {
     @IsString()
@@ -51,6 +73,12 @@ export class ProductDetailCreateDto {
         example: 1
     })
     quantity: number
+
+    @IsOptional()
+    @ApiPropertyOptional({
+        type: DiscountDto
+    })
+    discount: DiscountDto
 }
 
 export class ProductCreateDto {

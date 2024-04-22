@@ -3,7 +3,7 @@ import { ProductDetailCreateDto } from "./product-create.dto";
 import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { QuantityUpdateType } from "../constant/product-detail.enum";
 
-export class ProductDetailUpdateDto extends PickType(ProductDetailCreateDto, ['quantity', 'color','imageUrls','price', 'size']) {
+export class ProductDetailUpdateDto extends PickType(ProductDetailCreateDto, ['quantity', 'color','imageUrls','price', 'size', 'discount']) {
     @IsString()
     @IsNotEmpty()
     @ApiProperty({

@@ -162,7 +162,22 @@ export class ProductService {
     }
 
     async getOneProduct(_id: string) {
-        return await this.productRepository.findOne({_id: _id})
+        const [result] =  await this.productRepository.rawData([
+            {
+                $match: {
+                    _id: _id
+                }
+            },
+            {
+                $lookup: {
+                    from: 'productdetails',
+                    foreignField: 'product',
+                    localField: '_id',
+                    as: 'productDetails'
+                }
+            }
+        ])
+        return result
     }
 
     async createProduct(dto: ProductCreateDto, user) {
