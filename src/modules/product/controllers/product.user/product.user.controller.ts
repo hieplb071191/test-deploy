@@ -5,6 +5,7 @@ import { Auth } from "@src/common/decorators/auth.decorator";
 import { ProductListDto } from "../../dtos/product-list.dto";
 import { query } from "express";
 import { ProductDetailByInfo } from "../../dtos/product-detail-by-info.dto";
+import { ProductDetailByInfoDto } from "../../dtos/productdetail-list.dto";
 
 @ApiTags('product.user')
 @Controller('product-user')
@@ -35,7 +36,7 @@ export class ProductUserController {
         operationId: 'get-productdetail-by-info'
     })
     @Get('/product-detail-by-info/:productId')
-    getProductDetaiByInfo(@Query() query: ProductDetailByInfo, @Param('productId') productId) {
+    getProductDetaiByInfo(@Query() query: ProductDetailByInfoDto, @Param('productId') productId) {
         return this.service.getOneProductDetailByInfo(query, productId)
     }
 }

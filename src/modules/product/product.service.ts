@@ -7,7 +7,7 @@ import { ProductListDto } from './dtos/product-list.dto';
 import getSort from '@src/common/utils/get-sort-by.util';
 import { ProductUpdateDto } from './dtos/product-update.dto';
 import {v4} from 'uuid'
-import { ListProductDetailDto } from './dtos/productdetail-list.dto';
+import { ListProductDetailDto, ProductDetailByInfoDto } from './dtos/productdetail-list.dto';
 import { PipelineStage } from 'mongoose';
 import { ProductDetailUpdateDto, ProductDetailUpdateQuantityDto } from './dtos/product-detail-update.dto';
 import { QuantityUpdateType } from './constant/product-detail.enum';
@@ -410,12 +410,13 @@ export class ProductService {
         }
     }
 
-    async getOneProductDetailByInfo(query, productId) {
-        return await this.productDetailRepository.findOne({
+    async getOneProductDetailByInfo(query: ProductDetailByInfoDto, productId) {
+        const result = await this.productDetailRepository.findOne({
             product: productId,
             size: query.size,
             color: query.color
         })
+        return result
     }
 
     async getQueryDataProduct() {
