@@ -18,7 +18,7 @@ export class CartService {
             status: CartStatusEnum.INITIALIZE
         })
         if (oldCart) {
-            return await this.cartRepository.updateOne(
+            const result =  await this.cartRepository.updateOne(
                 {_id: oldCart._id},
                 {
                     $set: {
@@ -26,8 +26,13 @@ export class CartService {
                         updateBy: user.id,
                         updatedAt: new Date()
                     }
+                },
+                {
+                    returnOriginal: false
                 }
             )
+            console.log(result.toObject()) 
+            return result.toObject()
         } else {
             const createModel = {
                 items,
@@ -39,7 +44,7 @@ export class CartService {
     }
 
     async getCartByUser(user) {
-        return await this.cartRepository.findOne(
+        const cart = await this.cartRepository.findOne(
             {
                 createdBy: user.id,
                 status: CartStatusEnum.INITIALIZE
@@ -51,5 +56,10 @@ export class CartService {
                 }
             }
         )
+        if (!cart) {
+            return await this.cartRepository.create({createdBy: user.id})
+        }
+
+        return cart
     }
 }
